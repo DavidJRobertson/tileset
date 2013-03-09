@@ -54,7 +54,7 @@ function redraw() {
     cv.lineWidth = 1;
 
     var xcoord = xoffset % tileWidth() - tileWidth();
-    for (var i = 0; i < canvas.width; i = i + tileWidth()) {
+    for (var i = 0; i < canvas.width + tileWidth(); i = i + tileWidth()) {
       xcoord = xcoord + tileWidth();
 
       cv.moveTo(xcoord + 0.5, 0);
@@ -62,7 +62,7 @@ function redraw() {
       cv.stroke();
     }
     var ycoord = yoffset % tileWidth() - tileWidth();
-    for (var i = 0; i < canvas.height; i = i + tileWidth()) {
+    for (var i = 0; i < canvas.height + tileWidth(); i = i + tileWidth()) {
       ycoord = ycoord + tileWidth();
 
       cv.moveTo(0, ycoord + 0.5);
@@ -81,8 +81,8 @@ function redraw() {
   cv.fillStyle   = "white";
   cv.strokeStyle = "black";
   cv.lineWidth   = 1;
-  cv.fillRect(canvas.width - tswidth, canvas.height - tsheight, tswidth, tsheight);
-  cv.strokeRect(canvas.width - tswidth, canvas.height - tsheight, tswidth, tsheight);
+  //cv.fillRect(canvas.width - tswidth, canvas.height - tsheight, tswidth, tsheight);
+  //cv.strokeRect(canvas.width - tswidth, canvas.height - tsheight, tswidth, tsheight);
   
   // Record time/framerate
   var stopTime = new Date().getTime();
