@@ -1,0 +1,83 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  background-color: black;
+  color: white;
+  font-family: sans-serif;
+  
+  margin: 0;
+  padding: 0;
+  
+  height: 100%;
+}
+.floatright {
+  float: right;
+}
+.floatleft {
+  float: left;
+}
+
+canvas#editcanvas {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin: 0;
+  background-color: white;
+}
+
+.container {
+  margin:  0;
+  padding: 0;
+}
+
+.bar {
+  margin: 0;
+  background: #151515;
+}
+
+.bar.top {
+  width: 100%;
+  height: 80px;
+}
+
+.bar.left {
+  position: absolute;
+  width: 100px;
+  top: 80px; /* .bar.top(height) */
+  bottom: 0;
+  left: 0;
+}
+
+#statsbox {
+  margin: 10px;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+#toolkit {
+  position: absolute;
+  top: 39px;
+  left: 0;
+  margin: 10px;
+  
+  width: 350px;
+  background-color: red;
+  
+}
+#menubar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 30px;
+  margin: 10px;
+  padding: 0;  
+}
+
+#menubar > li {
+  display: inline;
+  margin-right: 6px;
+  font-size: 12px;
+  background-color: #666;
+  padding: 4px;
+}
