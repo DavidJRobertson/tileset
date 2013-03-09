@@ -1,27 +1,52 @@
 pixscale  = 6;
+tswidth  = 250.5;
+tsheight = 400.5;
+
 xoffset   = 0;
 yoffset   = 0;
-
 lastX     = 0;
 lastY     = 0;
 mousedown = false;
 spacedown = false;
 position  = false;
 
+
+rendercount = 0;
+
 doc = {
   title: "Example Tileset",
   tilesize: 8,  
+  tiles: {
+  
+  }
 }
 
 function redraw() {
   var startTime = new Date().getTime();
+  
+  rendercount++;
+  
+
+  
+  // Check constraints
+  var stagesize = 100 * tileWidth();
+  if (xoffset > stagesize)
+    xoffset = stagesize;
+  if (xoffset < -1 * stagesize)
+    xoffset = -1 * stagesize;
+  if (yoffset > stagesize)
+    yoffset = stagesize;
+  if (yoffset < -1 * stagesize)
+    yoffset = -1 * stagesize;
+    
   
   // Reset canvas and adjust size
   canvas.width  = window.innerWidth - $(".left.bar").width();
   canvas.height = window.innerHeight - $(".top.bar").height();
   
   // Background color
-  cv.fillStyle = "#303239";
+  //cv.fillStyle = "#303239";
+  cv.fillStyle = "#fff";
   cv.fillRect(0, 0, canvas.width, canvas.height);
   
   ////////////////////
@@ -46,12 +71,15 @@ function redraw() {
   drawTile(tile, 3, 0);
   
   drawTile(tile, 2, 1);
+  drawTile(tile, -1, -2);
   
   
   // Draw a grid on the stage
+  cv.beginPath();
+  cv.strokeStyle = "#888";
+  cv.lineWidth = 1;
   if (pixscale >= 3){
-    cv.strokeStyle = "#888";
-    cv.lineWidth = 1;
+    
 
     var xcoord = xoffset % tileWidth() - tileWidth();
     for (var i = 0; i < canvas.width + tileWidth(); i = i + tileWidth()) {
@@ -59,7 +87,6 @@ function redraw() {
 
       cv.moveTo(xcoord + 0.5, 0);
       cv.lineTo(xcoord + 0.5, canvas.height);
-      cv.stroke();
     }
     var ycoord = yoffset % tileWidth() - tileWidth();
     for (var i = 0; i < canvas.height + tileWidth(); i = i + tileWidth()) {
@@ -67,22 +94,41 @@ function redraw() {
 
       cv.moveTo(0, ycoord + 0.5);
       cv.lineTo(canvas.width, ycoord + 0.5);
-      cv.stroke();
     }
   }
+  cv.stroke();
   
+  // Draw the axes
+  cv.beginPath();
+  cv.strokeStyle = "#f00";
+  cv.lineWidth = 1;
+  cv.moveTo(xoffset + 0.5, 0);
+  cv.lineTo(xoffset + 0.5, canvas.height);
+  cv.moveTo(0, yoffset  + 0.5);
+  cv.lineTo(canvas.width, yoffset + 0.5);
+  cv.stroke();
+  
+  // Draw the tile cursor
+  if (position) {
+    cv.beginPath();
+    cv.strokeStyle = "#000";
+    cv.lineWidth = 2;
+    
+    var initx = position.tile.x * tileWidth() + xoffset;
+    var inity = position.tile.y * tileWidth() + yoffset;
+    cv.strokeRect(initx, inity, tileWidth(), tileWidth());
+  }
   
   ////////////////////////
   // DRAW THE TILESHEET //
   ////////////////////////
-  var tswidth  = 250.5;
-  var tsheight = 400.5;
+  
   
   cv.fillStyle   = "white";
   cv.strokeStyle = "black";
   cv.lineWidth   = 1;
-  //cv.fillRect(canvas.width - tswidth, canvas.height - tsheight, tswidth, tsheight);
-  //cv.strokeRect(canvas.width - tswidth, canvas.height - tsheight, tswidth, tsheight);
+  cv.fillRect(canvas.width - tswidth, canvas.height - tsheight, tswidth, tsheight);
+  cv.strokeRect(canvas.width - tswidth, canvas.height - tsheight, tswidth, tsheight);
   
   // Record time/framerate
   var stopTime = new Date().getTime();
@@ -154,6 +200,9 @@ $(function() {
   window.cv = canvas.getContext('2d');
   
   redraw();
+  xoffset = (canvas.width - tswidth + 0.5) / 2 ;
+  yoffset = canvas.height / 2;
+  redraw();
   
   $(canvas).mousedown(function(e) { 
     if (e.which == 1) {
@@ -192,6 +241,8 @@ $(function() {
       redraw();
     } else {
       position = getCursorPosition(e);
+      
+      redraw();
     }
   });
   
@@ -199,7 +250,7 @@ $(function() {
     e.preventDefault();
     
     var scalemin = 1;
-    var scalemax = 80;
+    var scalemax = 100;
     var zoomunit = 1;
     
     if (delta > 0)
@@ -218,10 +269,15 @@ $(function() {
     yoffset = Math.round(position.raw.y - (position.absolute.y + 0.5) * pixscale); 
     
     //# Make sure cursor stays under mouse
-    position = getCursorPosition(e)
+    position = getCursorPosition(e);
     
     redraw();
   });
+  
+  window.onresize = function(e) {
+    position = getCursorPosition(e);
+    redraw();
+  }
   
   window.oncontextmenu = function() { return false };
   
