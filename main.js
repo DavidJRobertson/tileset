@@ -340,26 +340,10 @@ $(function() {
   
   $(canvas).mousedown(function(e) {
     position = getCursorPosition(e);
-    var tileid = doc.stageCoordToTileID(position.tile.x, position.tile.y);
     mousedown = true;
     
-    console.log(spacedown);
-    console.log(tileid);
-    
-    if (!spacedown && tileid) { 
-      console.log("called");
-      // Not scrolling and valid tile under mouse at time of click: apply tool
-      
-      if (e.which == 1) {
-        // Left click
-        var color = doc.palette[primarycolorid-1]; 
-      } else { //if (e.which == 3) {
-        // Right click
-        var color = doc.palette[secondarycolorid-1]; 
-      }
-      tools[currentTool](tileid, position, color);
-      confirmexit = true;
-    }
+    applyCurrentTool(e);
+
     lastX = 0;
     lastY = 0;
   }).mouseup(function(e) {       
@@ -391,6 +375,8 @@ $(function() {
       redraw();
     } else {
       position = getCursorPosition(e);
+      
+      applyCurrentTool(e);
       
       redraw();
     }
@@ -436,13 +422,6 @@ $(function() {
     doc.showPalette();
   });
   
-  window.onresize = function(e) {
-    position = getCursorPosition(e);
-    redraw();
-  }
-  
-  window.oncontextmenu = function() { return false };
-  
   $('#set-pri-col').ColorPicker({
     onSubmit: function(hsb, hex, rgb, el) {
       var c = [rgb.r, rgb.g, rgb.b, 255];
@@ -470,6 +449,14 @@ $(function() {
 	  }
   });
   
+  
+  window.onresize = function(e) {
+    position = getCursorPosition(e);
+    redraw();
+  }  
+  
+  window.oncontextmenu = function() { return false };
+  
   window.onbeforeunload = confirmExit;
   function confirmExit(){
     if (confirmexit)
@@ -479,3 +466,20 @@ $(function() {
   
 });
 
+function applyCurrentTool(e) {
+  var tileid = doc.stageCoordToTileID(position.tile.x, position.tile.y);
+  
+  if (mousedown && !spacedown && tileid) { 
+    // Not scrolling and valid tile under mouse at time of click: apply tool
+    
+    if (e.which == 1) {
+      // Left click
+      var color = doc.palette[primarycolorid-1]; 
+    } else { //if (e.which == 3) {
+      // Right click
+      var color = doc.palette[secondarycolorid-1]; 
+    }
+    tools[currentTool](tileid, position, color);
+    confirmexit = true;
+  }
+}
