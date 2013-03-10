@@ -172,26 +172,19 @@ tools = {
     doc.unstageTile(position.tile.x, position.tile.y);
   },
   cuttile:   function(tileid, position, color) {
-    console.log("cut");
     clipboardtile = tileid;
     doc.unstageTile(position.tile.x, position.tile.y);
-    clipprevtool = 'cuttile';  
     setTool('pastetile');
   },
   copytile:  function(tileid, position, color) {
-    console.log("copy");
     clipboardtile = tileid;
-    clipprevtool = 'copytile';  
     setTool('pastetile');
   },
   pastetile: function(tileid, position, color) {
-    console.log("paste");
-    console.log(clipboardtile);
+    tileRestrictOn = false;
     if (clipboardtile) {
       doc.stageTile(position.tile.x, position.tile.y, clipboardtile);
-      //clipboardtile = false;
     }
-    //currentTool = clipprevtool;
   },
 }
 
@@ -608,6 +601,6 @@ function applyCurrentTool(e) {
 function setTool(tool){
   $('.tool').removeClass('selected');
   $('#toolkit-'+tool).addClass('selected');
-
+  tileRestrictOn = true;
   currentTool = tool;
 }
