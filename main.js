@@ -6,6 +6,7 @@ gridOn           = true;
 axesOn           = true;
 cursorOn         = true;
 tileRestrictOn   = true;
+checkerboardOn   = true;
 
 xoffset     = 0;
 yoffset     = 0;
@@ -182,9 +183,32 @@ function redraw() {
   canvas.height = window.innerHeight - $(".top.bar").height();
   
   // Background color
-  //cv.fillStyle = "#303239";
   cv.fillStyle = "#fff";
   cv.fillRect(0, 0, canvas.width, canvas.height);
+  
+  if (checkerboardOn && pixscale > 5) {
+    var cbox = xoffset % pixscale;
+    var cboy = yoffset % pixscale;
+    var cbs  = pixscale / 2;
+    
+    if (cbox > 0) {
+      cbox = -1 * pixscale + cbox;
+    }
+    if (cboy > 0) {
+      cboy = -1 * pixscale + cboy;
+    }
+      
+    cv.fillStyle = "#eee";
+    
+    for(var i = -1; i < canvas.width + pixscale; i += pixscale) {
+      for(var j = -1; j < canvas.height + pixscale; j += pixscale) {
+        cv.fillRect(i + cbox, j + cboy, cbs, cbs);
+        cv.fillRect(i + cbox + cbs, j + cboy + cbs, cbs, cbs);
+      }   
+    }
+    
+  }
+  
   
   ////////////////////
   // DRAW THE STAGE //
@@ -194,7 +218,7 @@ function redraw() {
   $.each(doc.stage, function(x, ar){
     $.each(ar, function(y, t){
       if (t && doc.tiles[t]) {
-        drawTile(doc.tiles[t], x, y);
+        drawTile(doc.tiles[t], x, y, pixscale);
       }
     });
   });
@@ -258,8 +282,25 @@ function redraw() {
   cv.fillStyle   = "white";
   cv.strokeStyle = "black";
   cv.lineWidth   = 1;
+  
   cv.fillRect(canvas.width - tswidth, canvas.height - tsheight, tswidth, tsheight);
   cv.strokeRect(canvas.width - tswidth, canvas.height - tsheight, tswidth, tsheight);
+  
+  // Tiles
+  var tct = 0;
+  var ss = 2;
+  for (i = 0; i <= 10 ; i++) {
+    for (j = 0; j <= 10; j++) {
+      tct++;
+      if (!doc.tiles[tct])
+        break;
+      drawTileRaw(doc.tiles[tct], canvas.width - tswidth + 0.5 + i * ss * doc.tilesize, canvas.height - tsheight + 0.5  + j * ss * doc.tilesize, ss);
+    }
+  }
+  
+  
+  
+  
   
   // Record time/framerate
   var stopTime = new Date().getTime();
@@ -268,16 +309,20 @@ function redraw() {
   $('#framerate').text("Render Time: " + renderTime + "ms");
 }
 
-function drawTile(tiledata, gridx, gridy) {
+function drawTileRaw(tiledata, gx, gy, scale) {
   for (var i=0; i < doc.tilesize; i++) {
     for (var j=0; j < doc.tilesize; j++) {
       var pixel = tiledata[j][i];
       cv.fillStyle = "rgba(" + pixel[0] + ", "+ pixel[1] + ", "+ pixel[2] + ", "+ pixel[3] + ")";
-      var x = xoffset + gridx * tileWidth() + j * pixscale;
-      var y = yoffset + gridy * tileWidth() + i * pixscale;
-      cv.fillRect(x, y, pixscale, pixscale);
+      var x = gx + j * scale;
+      var y = gy + i * scale;
+      cv.fillRect(x, y, scale, scale);
     }
   }
+}
+
+function drawTile(tiledata, gridx, gridy, pixscale) {
+  drawTileRaw(tiledata, xoffset + gridx * tileWidth(), yoffset + gridy * tileWidth(), pixscale);
 }
 
 function getCursorPosition (e) {
