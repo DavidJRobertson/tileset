@@ -23,6 +23,8 @@ confirmexit = false;
 currentTool = 'pencil';
 rendercount = 0;
 trcoord     = {x: 0, y: 0};
+clipboardtile = false;
+clipprevtool = 'cuttile';  
 
 doc = {
   tilesize: 8,
@@ -152,12 +154,45 @@ doc = {
 }
 
 tools = {
-  pencil: function(tileid, position, color) {
+  pencil:    function(tileid, position, color) {
+    if (!tileid) {
+      tileid = doc.addTile();
+      doc.stageTile(position.tile.x, position.tile.y, tileid);
+    }
     doc.setTilePixel(tileid, position.tilepixel.x, position.tilepixel.y, color);
   },
-  eraser: function(tileid, position, color) {
+  eraser:    function(tileid, position, color) {
+    if (!tileid) {
+      tileid = doc.addTile();
+      doc.stageTile(position.tile.x, position.tile.y, tileid);
+    }
     doc.setTilePixel(tileid, position.tilepixel.x, position.tilepixel.y, [0,0,0,0]);
-  }
+  },
+  unstage:   function(tileid, position, color) {
+    doc.unstageTile(position.tile.x, position.tile.y);
+  },
+  cuttile:   function(tileid, position, color) {
+    console.log("cut");
+    clipboardtile = tileid;
+    doc.unstageTile(position.tile.x, position.tile.y);
+    clipprevtool = 'cuttile';  
+    currentTool = 'pastetile';
+  },
+  copytile:  function(tileid, position, color) {
+    console.log("copy");
+    clipboardtile = tileid;
+    clipprevtool = 'copytile';  
+    currentTool = 'pastetile';
+  },
+  pastetile: function(tileid, position, color) {
+    console.log("paste");
+    console.log(clipboardtile);
+    if (clipboardtile) {
+      doc.stageTile(position.tile.x, position.tile.y, clipboardtile);
+      clipboardtile = false;
+    }
+    currentTool = clipprevtool;
+  },
 }
 
 
@@ -546,12 +581,6 @@ function applyCurrentTool(e) {
   
   if (mousedown && !spacedown) { 
     // Clicking but not scrolling: apply tool
-    // but first create tile if necessary
-    
-    if (!tileid) {
-      tileid = doc.addTile();
-      doc.stageTile(position.tile.x, position.tile.y, tileid);
-    }
     
     if (e.which == 1) {
       // Left click
