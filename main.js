@@ -123,6 +123,7 @@ doc = {
     }
     obj = JSON.parse(localStorage.getItem(name));
     if (!obj) {
+      this.showPalette();
       return false;
     }
     for(var key in obj) {
