@@ -43,7 +43,7 @@ canvas#editcanvas {
 
 .bar.left {
   position: absolute;
-  width: 100px;
+  width: 120px;
   top: 80px; /* .bar.top(height) */
   bottom: 0;
   left: 0;
@@ -80,4 +80,15 @@ canvas#editcanvas {
   font-size: 12px;
   background-color: #666;
   padding: 4px;
+}
+
+#palette {
+  margin: 10px;
+}
+#palette tr td {
+  border: 1px solid black;
+  width: 45px;
+  height: 30px;
+  text-align: center;
+  text-shadow: 1px 1px #333;
 }

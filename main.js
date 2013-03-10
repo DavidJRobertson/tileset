@@ -2,66 +2,87 @@ pixscale  = 6;
 tswidth  = 250.5;
 tsheight = 400.5;
 
-xoffset   = 0;
-yoffset   = 0;
-lastX     = 0;
-lastY     = 0;
-mousedown = false;
-spacedown = false;
-position  = false;
+primarycolorid   = 1;
+secondarycolorid = 2;
+
+gridOn   = true;
+axesOn   = true;
+cursorOn = true;
+
+
+
+
+xoffset     = 0;
+yoffset     = 0;
+lastX       = 0;
+lastY       = 0;
+mousedown   = false;
+spacedown   = false;
+position    = false;
+currentTool = 'pencil';
+
+
 
 
 rendercount = 0;
 
 doc = {
-  title: "Example Tileset",
-  tilesize: 8,  
-  tiles: {
-    1: [
-      [[10,20,30,40],[255,0,0,80],[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40]],
-      [[0,0,255,80],[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40]],
-      [[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40]],
-      [[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40]],
-      [[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40]],
-      [[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40]],
-      [[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40]], 
-      [[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40],[10,20,30,40]]      
-    ], 
-    2: [
-      [[30,255,60,255],[255,0,0,80],[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255]],
-      [[0,0,255,80],[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255]],
-      [[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255]],
-      [[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255]],
-      [[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255]],
-      [[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255]],
-      [[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255]], 
-      [[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255],[30,255,60,255]]      
-    ]
-  },
-  stage: {
-    '-1': {
-      '-2': 1
-    },
-    0: {
-      0: 1,
-      1: 2,
-      2: 1,
-      4: 2,
-      5: 1
-    },
-    1: {
-      0: 1
-    },
-    2: {
-      1: 1
-    },
-    3: {
-      0: 1
+  tilesize: 8,
+  stage: {},
+  tiles: {},
+  palette: [
+    [255,255,255,255], // White
+    [  0,  0,  0,255], // Black
+    [255,  0,  0,255], // Red
+    [  0,255,  0,255], // Green
+    [  0,  0,255,255], // Blue
+    [  0,255,255,255], // Cyan
+    [255,255,  0,255], // Yellow
+    [255,  0,255,255], // Magenta
+    [255,255,255,255],
+    [255,255,255,255],
+    [255,255,255,255],
+    [255,255,255,255],
+    [255,255,255,255],
+    [255,255,255,255],
+    [255,255,255,255],
+    [255,255,255,255],
+    [255,255,255,255],
+    [255,255,255,255],
+    [255,255,255,255],
+    [255,255,255,255]
+  ],
+  
+  tilecounter: 0,
+  
+  
+  addTile: function() {
+    this.tilecounter++;
+    var t = [];
+    for (var i = 0; i < this.tilesize; i++) {
+      t[i] = [];
+      for (var j = 0; j < this.tilesize; j++) {
+        t[i][j] = [0,0,0,0]; // Transparent black
+      }
     }
+    
+    this.tiles[this.tilecounter] = t;
+    redraw();
+    return this.tilecounter;
   },
-  
-  
-  
+  removeTile: function(id) {
+    delete this.tiles[id];
+  },
+  setTilePixel: function(id, x, y, pixel) {
+    if(!this.tiles[id] || x >= this.tilesize || y >= this.tilesize){
+      return false;
+    }
+    this.tiles[id][x][y] = pixel;
+    redraw();
+    return true;
+  },
+
+
   stageTile: function(x, y, tile) {
     if (!this.stage[x]) {
       this.stage[x] = {};
@@ -77,7 +98,13 @@ doc = {
     }
     redraw();
   },
-  
+  stageCoordToTileID: function(x, y) {
+    if (!this.stage[x] || !this.stage[x][y]) {
+      return false;
+    }
+    
+    return this.stage[x][y];
+  },
   save: function(name) {
     if (!name){
       name = "doc1";
@@ -96,7 +123,35 @@ doc = {
       this[key] = obj[key];
     }
     redraw();
+    this.showPalette();
     return true;
+  },
+  
+  showPalette: function() {
+    for (var n = 1; n <= 20; n++) {
+      var c = this.palette[n-1];
+      var selector = '#palette-' + n;
+      $(selector).css('background-color', 'rgba('+c[0]+','+c[1]+','+c[2]+','+c[3]+')');
+      
+      if (n == primarycolorid && n == secondarycolorid) {
+        $(selector).text("PS");
+      } else if (n == primarycolorid) {
+        $(selector).text("P");
+      } else if (n == secondarycolorid) {
+        $(selector).text("S");
+      } else {
+        $(selector).text("");
+      }
+    }
+  }
+}
+
+tools = {
+  pencil: function(tileid, position, color) {
+    doc.setTilePixel(tileid, position.tilepixel.x, position.tilepixel.y, color);
+  },
+  eraser: function(tileid, position, color) {
+    doc.setTilePixel(tileid, position.tilepixel.x, position.tilepixel.y, [0,0,0,0]);
   }
 }
 
@@ -136,48 +191,52 @@ function redraw() {
   // Draw tiles
   $.each(doc.stage, function(x, ar){
     $.each(ar, function(y, t){
-      if (t) {
+      if (t && doc.tiles[t]) {
         drawTile(doc.tiles[t], x, y);
       }
     });
   });
   
   // Draw grid
-  cv.beginPath();
-  cv.strokeStyle = "#888";
-  cv.lineWidth = 1;
-  if (pixscale >= 3){
-    
+  if (gridOn) {
+    cv.beginPath();
+    cv.strokeStyle = "#888";
+    cv.lineWidth = 1;
+    if (pixscale >= 3){
+      
 
-    var xcoord = xoffset % tileWidth() - tileWidth();
-    for (var i = 0; i < canvas.width + tileWidth(); i = i + tileWidth()) {
-      xcoord = xcoord + tileWidth();
+      var xcoord = xoffset % tileWidth() - tileWidth();
+      for (var i = 0; i < canvas.width + tileWidth(); i = i + tileWidth()) {
+        xcoord = xcoord + tileWidth();
 
-      cv.moveTo(xcoord + 0.5, 0);
-      cv.lineTo(xcoord + 0.5, canvas.height);
+        cv.moveTo(xcoord + 0.5, 0);
+        cv.lineTo(xcoord + 0.5, canvas.height);
+      }
+      var ycoord = yoffset % tileWidth() - tileWidth();
+      for (var i = 0; i < canvas.height + tileWidth(); i = i + tileWidth()) {
+        ycoord = ycoord + tileWidth();
+
+        cv.moveTo(0, ycoord + 0.5);
+        cv.lineTo(canvas.width, ycoord + 0.5);
+      }
     }
-    var ycoord = yoffset % tileWidth() - tileWidth();
-    for (var i = 0; i < canvas.height + tileWidth(); i = i + tileWidth()) {
-      ycoord = ycoord + tileWidth();
-
-      cv.moveTo(0, ycoord + 0.5);
-      cv.lineTo(canvas.width, ycoord + 0.5);
-    }
+    cv.stroke();
   }
-  cv.stroke();
   
   // Draw axes
-  cv.beginPath();
-  cv.strokeStyle = "#f00";
-  cv.lineWidth = 1;
-  cv.moveTo(xoffset + 0.5, 0);
-  cv.lineTo(xoffset + 0.5, canvas.height);
-  cv.moveTo(0, yoffset  + 0.5);
-  cv.lineTo(canvas.width, yoffset + 0.5);
-  cv.stroke();
+  if (axesOn) {
+    cv.beginPath();
+    cv.strokeStyle = "#f00";
+    cv.lineWidth = 1;
+    cv.moveTo(xoffset + 0.5, 0);
+    cv.lineTo(xoffset + 0.5, canvas.height);
+    cv.moveTo(0, yoffset  + 0.5);
+    cv.lineTo(canvas.width, yoffset + 0.5);
+    cv.stroke();
+  }
   
   // Draw tile cursor
-  if (position) {
+  if (cursorOn && position) {
     cv.beginPath();
     cv.strokeStyle = "#000";
     cv.lineWidth = 2;
@@ -210,7 +269,7 @@ function redraw() {
 function drawTile(tiledata, gridx, gridy) {
   for (var i=0; i < doc.tilesize; i++) {
     for (var j=0; j < doc.tilesize; j++) {
-      var pixel = tiledata[i][j];
+      var pixel = tiledata[j][i];
       cv.fillStyle = "rgba(" + pixel[0] + ", "+ pixel[1] + ", "+ pixel[2] + ", "+ pixel[3] + ")";
       var x = xoffset + gridx * tileWidth() + j * pixscale;
       var y = yoffset + gridy * tileWidth() + i * pixscale;
@@ -269,19 +328,30 @@ $(function() {
   window.canvas = document.getElementById('editcanvas')
   window.cv = canvas.getContext('2d');
   
-  redraw();
+  doc.load();
   xoffset = (canvas.width - tswidth + 0.5) / 2 ;
   yoffset = canvas.height / 2;
   redraw();
   
-  $(canvas).mousedown(function(e) { 
-    if (e.which == 1) {
-      mousedown = true;
-      lastX = 0;
-      lastY = 0;            
-    } else if (e.which == 3) {
-      mousedown = true;
+  $(canvas).mousedown(function(e) {
+    position = getCursorPosition(e);
+    var tileid = doc.stageCoordToTileID(position.tile.x, position.tile.y);
+    mousedown = true;
+    
+    if (!spacedown && tileid) { 
+      // Not scrolling and valid tile under mouse at time of click: apply tool
+      
+      if (e.which == 1) {
+        // Left click
+        var color = doc.palette[primarycolorid-1]; 
+      } else { //if (e.which == 3) {
+        // Right click
+        var color = doc.palette[secondarycolorid-1]; 
+      }
+      tools[currentTool](tileid, position, color);
     }
+    lastX = 0;
+    lastY = 0;
   }).mouseup(function(e) {       
     mousedown = false;
   });
@@ -342,6 +412,18 @@ $(function() {
     position = getCursorPosition(e);
     
     redraw();
+  });
+  
+  $('.palette-color').mousedown(function(e) {
+    var id = e.target.id;
+    id = +id.substr(8);
+    if (e.which == 1) {
+      primarycolorid = id;
+    } else if (e.which == 3) {
+      secondarycolorid = id;
+    }
+    
+    doc.showPalette();
   });
   
   window.onresize = function(e) {
