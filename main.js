@@ -469,8 +469,14 @@ $(function() {
 function applyCurrentTool(e) {
   var tileid = doc.stageCoordToTileID(position.tile.x, position.tile.y);
   
-  if (mousedown && !spacedown && tileid) { 
-    // Not scrolling and valid tile under mouse at time of click: apply tool
+  if (mousedown && !spacedown) { 
+    // Clicking but not scrolling: apply tool
+    // but first create tile if necessary
+    
+    if (!tileid) {
+      tileid = doc.addTile();
+      doc.stageTile(position.tile.x, position.tile.y, tileid);
+    }
     
     if (e.which == 1) {
       // Left click
