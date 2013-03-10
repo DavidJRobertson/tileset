@@ -307,6 +307,10 @@ function getCursorPosition (e) {
   // And the pixel within that tile
   var xp = xs % doc.tilesize;
   var yp = ys % doc.tilesize;
+  if (xp < 0)
+    xp = doc.tilesize + xp;
+  if (yp < 0)
+    yp = doc.tilesize + yp;
   
   coord = {
     tile: {x: xt, y: yt },
