@@ -349,6 +349,9 @@ function redraw() {
 function drawTileRaw(tiledata, gx, gy, scale) {
   for (var i=0; i < doc.tilesize; i++) {
     for (var j=0; j < doc.tilesize; j++) {
+      if (!tiledata[j] || !tiledata[j][i]) {
+        continue;
+      }
       var pixel = tiledata[j][i];
       cv.fillStyle = "rgba(" + pixel[0] + ", "+ pixel[1] + ", "+ pixel[2] + ", "+ pixel[3] + ")";
       var x = gx + j * scale;
