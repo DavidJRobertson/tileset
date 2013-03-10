@@ -214,6 +214,18 @@ function redraw() {
   // DRAW THE STAGE //
   ////////////////////
   
+  // Draw axes
+  if (axesOn) {
+    cv.beginPath();
+    cv.strokeStyle = "#f00";
+    cv.lineWidth = 1;
+    cv.moveTo(xoffset + 0.5, 0);
+    cv.lineTo(xoffset + 0.5, canvas.height);
+    cv.moveTo(0, yoffset  + 0.5);
+    cv.lineTo(canvas.width, yoffset + 0.5);
+    cv.stroke();
+  }
+  
   // Draw tiles
   $.each(doc.stage, function(x, ar){
     $.each(ar, function(y, t){
@@ -246,18 +258,6 @@ function redraw() {
         cv.lineTo(canvas.width, ycoord + 0.5);
       }
     }
-    cv.stroke();
-  }
-  
-  // Draw axes
-  if (axesOn) {
-    cv.beginPath();
-    cv.strokeStyle = "#f00";
-    cv.lineWidth = 1;
-    cv.moveTo(xoffset + 0.5, 0);
-    cv.lineTo(xoffset + 0.5, canvas.height);
-    cv.moveTo(0, yoffset  + 0.5);
-    cv.lineTo(canvas.width, yoffset + 0.5);
     cv.stroke();
   }
   
