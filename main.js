@@ -343,7 +343,11 @@ $(function() {
     var tileid = doc.stageCoordToTileID(position.tile.x, position.tile.y);
     mousedown = true;
     
+    console.log(spacedown);
+    console.log(tileid);
+    
     if (!spacedown && tileid) { 
+      console.log("called");
       // Not scrolling and valid tile under mouse at time of click: apply tool
       
       if (e.which == 1) {
@@ -469,7 +473,8 @@ $(function() {
   window.onbeforeunload = confirmExit;
   function confirmExit(){
     if (confirmexit)
-      return "Are you sure? You have unsaved changes.";
+      spacedown = false;
+      return "You have unsaved changes.";
   }
   
 });
