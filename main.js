@@ -559,6 +559,16 @@ $(function() {
 	  }
   });
   
+  $('#menubar>li>span').click(function(e){
+    e.preventDefault();
+    $(e.target).next().toggle();
+  }).on('selectstart', function(e){
+    e.preventDefault();
+  });
+  
+  $('#menubar>li>.dropdown').hide();
+  $('#menu-file-save').click(function(e) { doc.save(); $('#menu-file').hide() });
+  $('#menu-file-load').click(function(e) { doc.load(); $('#menu-file').hide() });
   
   window.onresize = function(e) {
     position = getCursorPosition(e);
@@ -569,9 +579,10 @@ $(function() {
   
   window.onbeforeunload = confirmExit;
   function confirmExit(){
-    if (confirmexit)
+    if (confirmexit) {
       spacedown = false;
       return "You have unsaved changes.";
+    }
   }
   
 });
