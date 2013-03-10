@@ -54,6 +54,8 @@ canvas#editcanvas {
   position: absolute;
   top: 0;
   right: 0;
+  width: 200px;
+  text-align: left;
 }
 #toolkit {
   position: absolute;

@@ -317,8 +317,8 @@ function redraw() {
   // DRAW THE TILESHEET //
   ////////////////////////
   
-  // White box thing
-  cv.fillStyle   = "white";
+  // Box thing
+  cv.fillStyle   = "black";
   cv.strokeStyle = "black";
   cv.lineWidth   = 1;
   
@@ -331,9 +331,13 @@ function redraw() {
   for (i = 0; i <= 10 ; i++) {
     for (j = 0; j <= 10; j++) {
       tct++;
+      var xloc = canvas.width - tswidth + 0.5 + i * ss * doc.tilesize;
+      var yloc = canvas.height - tsheight + 0.5  + j * ss * doc.tilesize;
       if (!doc.tiles[tct])
         break;
-      drawTileRaw(doc.tiles[tct], canvas.width - tswidth + 0.5 + i * ss * doc.tilesize, canvas.height - tsheight + 0.5  + j * ss * doc.tilesize, ss);
+      cv.fillStyle   = "white";
+      cv.fillRect(xloc, yloc, ss * doc.tilesize, ss * doc.tilesize);
+      drawTileRaw(doc.tiles[tct], xloc, yloc, ss);
     }
   }
   
