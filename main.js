@@ -176,22 +176,22 @@ tools = {
     clipboardtile = tileid;
     doc.unstageTile(position.tile.x, position.tile.y);
     clipprevtool = 'cuttile';  
-    currentTool = 'pastetile';
+    setTool('pastetile');
   },
   copytile:  function(tileid, position, color) {
     console.log("copy");
     clipboardtile = tileid;
     clipprevtool = 'copytile';  
-    currentTool = 'pastetile';
+    setTool('pastetile');
   },
   pastetile: function(tileid, position, color) {
     console.log("paste");
     console.log(clipboardtile);
     if (clipboardtile) {
       doc.stageTile(position.tile.x, position.tile.y, clipboardtile);
-      clipboardtile = false;
+      //clipboardtile = false;
     }
-    currentTool = clipprevtool;
+    //currentTool = clipprevtool;
   },
 }
 
@@ -528,11 +528,7 @@ $(function() {
   });
   
   $('.tool').mousedown(function(e) {
-    $('.tool').removeClass('selected');
-    $(e.target).addClass('selected');
-    
-    var id = e.target.id;
-    currentTool = id.substr(8);
+    setTool(e.target.id.substr(8));
   });
   
   
@@ -596,4 +592,11 @@ function applyCurrentTool(e) {
     tools[currentTool](tileid, position, color);
     confirmexit = true;
   }
+}
+
+function setTool(tool){
+  $('.tool').removeClass('selected');
+  $('#toolkit-'+tool).addClass('selected');
+
+  currentTool = tool;
 }
