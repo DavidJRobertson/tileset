@@ -375,7 +375,7 @@ $(function() {
     } else {
       position = getCursorPosition(e);
       
-      if ((position.tile.x == trcoord.x && position.tile.y == trcoord.y) || !toolRestrictOn) {
+      if ((position.tile.x == trcoord.x && position.tile.y == trcoord.y) || !tileRestrictOn) {
         applyCurrentTool(e);
       }
       redraw();
