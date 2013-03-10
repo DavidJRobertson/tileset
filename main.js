@@ -2,11 +2,13 @@ pixscale  = 6;
 tswidth  = 250.5;
 tsheight = 400.5;
 
-gridOn           = true;
-axesOn           = true;
-cursorOn         = true;
-tileRestrictOn   = true;
-checkerboardOn   = true;
+gridOn             = true;
+axesOn             = true;
+cursorOn           = true;
+tileRestrictOn     = true;
+checkerboardOn     = true;
+fullCheckerboardOn = false;
+
 
 xoffset     = 0;
 yoffset     = 0;
@@ -186,7 +188,8 @@ function redraw() {
   cv.fillStyle = "#fff";
   cv.fillRect(0, 0, canvas.width, canvas.height);
   
-  if (checkerboardOn && pixscale > 5) {
+  if (fullCheckerboardOn && pixscale > 5) {
+    // This does not run by default
     var cbox = xoffset % pixscale;
     var cboy = yoffset % pixscale;
     var cbs  = pixscale / 2;
@@ -213,18 +216,6 @@ function redraw() {
   ////////////////////
   // DRAW THE STAGE //
   ////////////////////
-  
-  // Draw axes
-  if (axesOn) {
-    cv.beginPath();
-    cv.strokeStyle = "#f00";
-    cv.lineWidth = 1;
-    cv.moveTo(xoffset + 0.5, 0);
-    cv.lineTo(xoffset + 0.5, canvas.height);
-    cv.moveTo(0, yoffset  + 0.5);
-    cv.lineTo(canvas.width, yoffset + 0.5);
-    cv.stroke();
-  }
   
   // Draw tiles
   $.each(doc.stage, function(x, ar){
@@ -260,7 +251,20 @@ function redraw() {
     }
     cv.stroke();
   }
-  
+
+
+  // Draw axes
+  if (axesOn) {
+    cv.beginPath();
+    cv.strokeStyle = "#f00";
+    cv.lineWidth = 1;
+    cv.moveTo(xoffset + 0.5, 0);
+    cv.lineTo(xoffset + 0.5, canvas.height);
+    cv.moveTo(0, yoffset  + 0.5);
+    cv.lineTo(canvas.width, yoffset + 0.5);
+    cv.stroke();
+  }
+    
   // Draw tile cursor
   if (cursorOn && position) {
     cv.beginPath();
@@ -322,6 +326,19 @@ function drawTileRaw(tiledata, gx, gy, scale) {
 }
 
 function drawTile(tiledata, gridx, gridy, pixscale) {
+  if (checkerboardOn && pixscale > 5) {
+    var cbs  = pixscale / 2;
+    
+    cv.fillStyle = "#eee";
+    
+    for(var i = 0; i < tileWidth(); i += pixscale) {
+      for(var j = 0; j < tileWidth(); j += pixscale) {
+        cv.fillRect(xoffset + gridx * tileWidth() +  i,       yoffset + gridy * tileWidth() + j,       cbs, cbs);
+        cv.fillRect(xoffset + gridx * tileWidth() + i + cbs,  yoffset + gridy * tileWidth() + j + cbs, cbs, cbs);
+      }   
+    }
+    
+  }
   drawTileRaw(tiledata, xoffset + gridx * tileWidth(), yoffset + gridy * tileWidth(), pixscale);
 }
 
