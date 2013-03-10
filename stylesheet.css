@@ -61,10 +61,18 @@ canvas#editcanvas {
   left: 0;
   margin: 10px;
   
-  width: 350px;
-  background-color: red;
-  
+  width: 350px;  
 }
+#toolkit .tool {
+  font-size: 12px;
+  padding: 3px;
+  margin-right: 5px;
+  background-color: #333;
+}
+#toolkit .tool.selected {
+  background-color: #666;
+}
+
 #menubar {
   position: absolute;
   top: 0;

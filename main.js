@@ -488,6 +488,15 @@ $(function() {
     doc.showPalette();
   });
   
+  $('.tool').mousedown(function(e) {
+    $('.tool').removeClass('selected');
+    $(e.target).addClass('selected');
+    
+    var id = e.target.id;
+    currentTool = id.substr(8);
+  });
+  
+  
   $('#set-pri-col').ColorPicker({
     onSubmit: function(hsb, hex, rgb, el) {
       var c = [rgb.r, rgb.g, rgb.b, 255];
