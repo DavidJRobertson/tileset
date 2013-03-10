@@ -2,27 +2,24 @@ pixscale  = 6;
 tswidth  = 250.5;
 tsheight = 400.5;
 
-primarycolorid   = 1;
-secondarycolorid = 2;
-
-gridOn   = true;
-axesOn   = true;
-cursorOn = true;
-
-
-
+gridOn           = true;
+axesOn           = true;
+cursorOn         = true;
+tileRestrictOn   = true;
 
 xoffset     = 0;
 yoffset     = 0;
 lastX       = 0;
 lastY       = 0;
+primarycolorid   = 1;
+secondarycolorid = 2;
 mousedown   = false;
 spacedown   = false;
 position    = false;
 confirmexit = false;
 currentTool = 'pencil';
 rendercount = 0;
-
+trcoord     = {x: 0, y: 0};
 
 doc = {
   tilesize: 8,
@@ -342,6 +339,8 @@ $(function() {
     position = getCursorPosition(e);
     mousedown = true;
     
+    trcoord = position.tile;
+    
     applyCurrentTool(e);
 
     lastX = 0;
@@ -376,8 +375,9 @@ $(function() {
     } else {
       position = getCursorPosition(e);
       
-      applyCurrentTool(e);
-      
+      if ((position.tile.x == trcoord.x && position.tile.y == trcoord.y) || !toolRestrictOn) {
+        applyCurrentTool(e);
+      }
       redraw();
     }
   });
