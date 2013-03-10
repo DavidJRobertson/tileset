@@ -92,3 +92,11 @@ canvas#editcanvas {
   text-align: center;
   text-shadow: 1px 1px #333;
 }
+
+.setcol {
+  font-size: 12px;
+  background-color: #333;
+  margin: 12px;
+  margin-right: 16px;
+  padding: 5px;
+}

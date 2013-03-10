@@ -19,12 +19,10 @@ lastY       = 0;
 mousedown   = false;
 spacedown   = false;
 position    = false;
+confirmexit = false;
 currentTool = 'pencil';
-
-
-
-
 rendercount = 0;
+
 
 doc = {
   tilesize: 8,
@@ -68,10 +66,12 @@ doc = {
     
     this.tiles[this.tilecounter] = t;
     redraw();
+    confirmexit = true;
     return this.tilecounter;
   },
   removeTile: function(id) {
     delete this.tiles[id];
+    confirmexit = true;
   },
   setTilePixel: function(id, x, y, pixel) {
     if(!this.tiles[id] || x >= this.tilesize || y >= this.tilesize){
@@ -79,6 +79,7 @@ doc = {
     }
     this.tiles[id][x][y] = pixel;
     redraw();
+    confirmexit = true;
     return true;
   },
 
@@ -88,6 +89,7 @@ doc = {
       this.stage[x] = {};
     }
     this.stage[x][y] = tile;
+    confirmexit = true;
     redraw();
   },
   unstageTile: function(x, y) {
@@ -96,6 +98,7 @@ doc = {
         delete this.stage[x][y];
       }
     }
+    confirmexit = true;
     redraw();
   },
   stageCoordToTileID: function(x, y) {
@@ -110,6 +113,7 @@ doc = {
       name = "doc1";
     }
     window.localStorage.setItem(name, JSON.stringify(this));
+    confirmexit = false;
   },
   load: function(name) {
     if (!name){
@@ -124,6 +128,7 @@ doc = {
     }
     redraw();
     this.showPalette();
+    confirmexit = false;
     return true;
   },
   
@@ -349,6 +354,7 @@ $(function() {
         var color = doc.palette[secondarycolorid-1]; 
       }
       tools[currentTool](tileid, position, color);
+      confirmexit = true;
     }
     lastX = 0;
     lastY = 0;
@@ -432,6 +438,39 @@ $(function() {
   }
   
   window.oncontextmenu = function() { return false };
+  
+  $('#set-pri-col').ColorPicker({
+    onSubmit: function(hsb, hex, rgb, el) {
+      var c = [rgb.r, rgb.g, rgb.b, 255];
+      doc.palette[primarycolorid - 1] = c;
+      confirmexit = true;
+      doc.showPalette();
+      $(el).ColorPickerHide();
+    },
+    onBeforeShow: function () {
+      var c = doc.palette[primarycolorid - 1];
+		  $(this).ColorPickerSetColor({r: c[0], g: c[1], b: c[2]});
+	  }
+  });
+  $('#set-sec-col').ColorPicker({
+    onSubmit: function(hsb, hex, rgb, el) {
+      var c = [rgb.r, rgb.g, rgb.b, 255];
+      doc.palette[secondarycolorid - 1] = c;
+      confirmexit = true;
+      doc.showPalette();
+      $(el).ColorPickerHide();
+    },
+    onBeforeShow: function () {
+      var c = doc.palette[secondarycolorid - 1];
+		  $(this).ColorPickerSetColor({r: c[0], g: c[1], b: c[2]});
+	  }
+  });
+  
+  window.onbeforeunload = confirmExit;
+  function confirmExit(){
+    if (confirmexit)
+      return "Are you sure? You have unsaved changes.";
+  }
   
 });
 
