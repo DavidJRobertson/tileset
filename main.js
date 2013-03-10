@@ -79,6 +79,9 @@ doc = {
     if(!this.tiles[id] || x >= this.tilesize || y >= this.tilesize){
       return false;
     }
+    if(!this.tiles[id][x]) {
+      this.tiles[id][x] = [];
+    }
     this.tiles[id][x][y] = pixel;
     redraw();
     confirmexit = true;
